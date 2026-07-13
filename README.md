@@ -50,7 +50,7 @@ Delivery points live in `data/delivery_points.csv` (name, lat, lng) — edit
 freely to route between different landmarks.
 
 ## Status
-Scaffold in place; algorithms implemented incrementally (see commit history).
+algorithms implemented incrementally (see commit history).
 
 ## Design notes / tradeoffs
 - **Floyd-Warshall vs repeated Dijkstra**: Floyd-Warshall is O(V³), which is
