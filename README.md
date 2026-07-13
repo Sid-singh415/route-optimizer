@@ -3,7 +3,7 @@
 A C++ tool that models city locations as a weighted graph and computes efficient
 multi-stop delivery routes. Built to demonstrate graph algorithms, heuristics,
 and the engineering around them (tests, benchmarks, clean build).
-![Uploading image.png…]()
+<img width="1298" height="710" alt="image" src="https://github.com/user-attachments/assets/04ffc3f3-f780-4161-92ab-d8f33a2cac7e" />
 
 
 ## Algorithms
