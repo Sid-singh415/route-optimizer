@@ -1,0 +1,15 @@
+{
+  "version": 0.6,
+  "generator": "test-fixture",
+  "elements": [
+    {"type": "node", "id": 1, "lat": 30.0000, "lon": 76.0000},
+    {"type": "node", "id": 2, "lat": 30.0010, "lon": 76.0000},
+    {"type": "node", "id": 3, "lat": 30.0020, "lon": 76.0000},
+    {"type": "node", "id": 4, "lat": 30.0030, "lon": 76.0000},
+    {"type": "node", "id": 5, "lat": 30.0040, "lon": 76.0000},
+    {"type": "node", "id": 6, "lat": 30.0050, "lon": 76.0000},
+    {"type": "way", "id": 100, "nodes": [1, 2, 3], "tags": {"highway": "residential"}},
+    {"type": "way", "id": 101, "nodes": [3, 4, 5], "tags": {"highway": "residential", "oneway": "yes"}},
+    {"type": "way", "id": 102, "nodes": [5, 6], "tags": {"highway": "residential", "oneway": "-1"}}
+  ]
+}

@@ -19,3 +19,7 @@ cmake_install.cmake
 .idea/
 *.swp
 .DS_Store
+
+# Generated OSM cache / pipeline output (regenerate via scripts/fetch_osm.sh + chandigarh_demo)
+/data/chandigarh_roads.json
+/route.json

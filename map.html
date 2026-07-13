@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Chandigarh Delivery Route</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+  #map { height: 100%; width: 100%; }
+  #legend {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    font-size: 14px;
+    line-height: 1.5;
+    min-width: 200px;
+  }
+  #legend h3 { margin: 0 0 8px; font-size: 15px; }
+  #legend .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+  #legend .improvement { margin-top: 8px; font-weight: 600; color: #16a34a; }
+  #legend .error { color: #dc2626; font-weight: 600; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="legend"><em>Loading route.json&hellip;</em></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map');
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  const GREEDY_COLOR = '#f97316';
+  const OPTIMIZED_COLOR = '#2563eb';
+
+  fetch('route.json')
+    .then(res => res.json())
+    .then(data => {
+      const markers = [];
+      data.delivery_points.forEach(p => {
+        const marker = L.marker([p.lat, p.lng]).addTo(map);
+        marker.bindTooltip(p.name, { permanent: true, direction: 'top', className: 'stop-label' });
+        marker.bindPopup(`<strong>${p.name}</strong><br>${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}`);
+        markers.push(marker);
+      });
+
+      // Greedy drawn first (dashed) so the optimized route drawn on top
+      // stays visible where the two overlap on the same streets.
+      data.greedy_route.legs.forEach(leg => {
+        L.polyline(leg.polyline, { color: GREEDY_COLOR, weight: 4, opacity: 0.75, dashArray: '8 8' }).addTo(map);
+      });
+      data.optimized_route.legs.forEach(leg => {
+        L.polyline(leg.polyline, { color: OPTIMIZED_COLOR, weight: 4, opacity: 0.9 }).addTo(map);
+      });
+
+      if (markers.length > 0) {
+        map.fitBounds(L.featureGroup(markers).getBounds(), { padding: [40, 40] });
+      } else {
+        map.setView([30.74, 76.78], 12);
+      }
+
+      const greedyKm = (data.greedy_route.distance_m / 1000).toFixed(2);
+      const optimizedKm = (data.optimized_route.distance_m / 1000).toFixed(2);
+      const improvement = data.improvement_pct.toFixed(1);
+
+      document.getElementById('legend').innerHTML = `
+        <h3>Chandigarh Delivery Route</h3>
+        <div><span class="swatch" style="background:${GREEDY_COLOR}"></span>Greedy route</div>
+        <div><span class="swatch" style="background:${OPTIMIZED_COLOR}"></span>Optimized route</div>
+        <div style="margin-top:8px">Greedy distance: <strong>${greedyKm} km</strong></div>
+        <div>Optimized distance: <strong>${optimizedKm} km</strong></div>
+        <div class="improvement">${improvement}% shorter</div>
+      `;
+    })
+    .catch(err => {
+      map.setView([30.74, 76.78], 12);
+      document.getElementById('legend').innerHTML = `
+        <h3>Chandigarh Delivery Route</h3>
+        <div class="error">Failed to load route.json</div>
+        <div>${err}</div>
+        <div style="margin-top:8px">Run <code>./build/chandigarh_demo</code> to generate it, and serve this
+        page over HTTP (e.g. <code>python3 -m http.server</code>) rather than opening it directly &mdash;
+        browsers block <code>fetch()</code> against <code>file://</code> URLs.</div>
+      `;
+    });
+</script>
+</body>
+</html>
