@@ -1,45 +1,37 @@
 #include "graph.h"
-#include "dijkstra.h"
 #include "floyd_warshall.h"
+#include "nearest_neighbour.h"
+#include "two_opt.h"
 #include <iostream>
-#include <iomanip>
 
 int main() {
     using namespace route;
 
-    // Tiny sample graph:
-    //   0 --2-- 1 --1-- 2
-    //   |               |
-    //   +------4--------+   (0-3 weight 4, 2-3 weight 1)
-    Graph g(4);
-    g.addEdge(0, 1, 2.0);
-    g.addEdge(1, 2, 1.0);
-    g.addEdge(0, 3, 4.0);
-    g.addEdge(2, 3, 1.0);
+    Graph g(6);
+    g.addEdge(0, 1, 7.0);
+    g.addEdge(0, 2, 9.0);
+    g.addEdge(1, 2, 3.0);
+    g.addEdge(1, 3, 5.0);
+    g.addEdge(2, 3, 4.0);
+    g.addEdge(2, 4, 2.0);
+    g.addEdge(3, 5, 6.0);
+    g.addEdge(4, 5, 8.0);
 
-    // --- Dijkstra from node 0 ---
-    ShortestPaths sp = dijkstra(g, 0);
-    std::cout << "Dijkstra: shortest distances from node 0\n";
-    for (int v = 0; v < g.numNodes(); ++v) {
-        std::cout << "  0 -> " << v << " = ";
-        if (sp.dist[v] == INF) std::cout << "unreachable";
-        else                   std::cout << sp.dist[v];
-        std::cout << "\n";
-    }
-
-    // --- Floyd-Warshall all-pairs ---
     AllPairs ap = floydWarshall(g);
-    std::cout << "\nFloyd-Warshall: all-pairs distance matrix\n     ";
-    for (int j = 0; j < ap.n; ++j) std::cout << std::setw(5) << j;
-    std::cout << "\n";
-    for (int i = 0; i < ap.n; ++i) {
-        std::cout << std::setw(3) << i << ": ";
-        for (int j = 0; j < ap.n; ++j) {
-            if (ap.dist[i][j] == INF) std::cout << std::setw(5) << "INF";
-            else                      std::cout << std::setw(5) << ap.dist[i][j];
-        }
-        std::cout << "\n";
-    }
+    std::vector<int> stops = {0, 1, 3, 4, 5};
+
+    Tour nn = nearestNeighbour(ap, stops, 0);
+    std::cout << "Greedy (nearest-neighbour):  ";
+    for (int x : nn.order) std::cout << x << " -> ";
+    std::cout << nn.order.front() << "   length = " << nn.length << "\n";
+
+    Tour opt = twoOpt(ap, nn);
+    std::cout << "After 2-opt refinement:      ";
+    for (int x : opt.order) std::cout << x << " -> ";
+    std::cout << opt.order.front() << "   length = " << opt.length << "\n";
+
+    double improvement = 100.0 * (nn.length - opt.length) / nn.length;
+    std::cout << "Improvement: " << improvement << "%\n";
 
     return 0;
 }
