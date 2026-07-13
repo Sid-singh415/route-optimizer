@@ -3,6 +3,8 @@
 A C++ tool that models city locations as a weighted graph and computes efficient
 multi-stop delivery routes. Built to demonstrate graph algorithms, heuristics,
 and the engineering around them (tests, benchmarks, clean build).
+![Uploading image.png…]()
+
 
 ## Algorithms
 - **Dijkstra** (set) — point-to-point shortest paths
