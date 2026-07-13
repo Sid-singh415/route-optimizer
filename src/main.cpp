@@ -1,5 +1,5 @@
 #include "graph.h"
-#include "floyd_warshall.h"
+#include "all_pairs.h"
 #include "nearest_neighbour.h"
 #include "two_opt.h"
 #include <iostream>
@@ -17,7 +17,7 @@ int main() {
     g.addEdge(3, 5, 6.0);
     g.addEdge(4, 5, 8.0);
 
-    AllPairs ap = floydWarshall(g);
+    AllPairs ap = allPairsShortestPaths(g);
     std::vector<int> stops = {0, 1, 3, 4, 5};
 
     Tour nn = nearestNeighbour(ap, stops, 0);

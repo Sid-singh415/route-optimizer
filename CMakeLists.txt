@@ -14,6 +14,7 @@ add_library(route_core
   src/graph.cpp
   src/dijkstra.cpp
   src/floyd_warshall.cpp
+  src/all_pairs.cpp
   src/nearest_neighbour.cpp
   src/two_opt.cpp
 )
@@ -41,6 +42,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(unit_tests
   tests/test_dijkstra.cpp
   tests/test_floyd_warshall.cpp
+  tests/test_all_pairs.cpp
   tests/test_tour.cpp
 )
 target_link_libraries(unit_tests PRIVATE route_core GTest::gtest_main)
