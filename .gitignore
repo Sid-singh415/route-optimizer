@@ -1,0 +1,21 @@
+# Build artifacts
+/build/
+*.o
+*.obj
+*.exe
+*.out
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+
+# Secrets — never commit API keys
+.env
+*.key
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
